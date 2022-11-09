@@ -24,6 +24,7 @@ const run = async () => {
     try {
         // access sock market db service schema
         const serviceCollection = client.db("StockMarket").collection("services");
+        const reviewCollection = client.db("StockMarket").collection("reviews");
         app.get('/', (req, res) => {
             res.status(200).send('Hello world')
         })
@@ -42,6 +43,14 @@ const run = async () => {
             const query = { _id: ObjectId(id) }
             const result = await serviceCollection.findOne(query)
             res.send(result)
+        })
+        //add user review
+        app.post('/review', async (req, res) => {
+            const reviewDoc = req.body
+            const result = await reviewCollection.insertOne(reviewDoc)
+            if (result) {
+                res.send({ result, reviewDoc })
+            }
         })
     } catch (err) {
         console.log(err)
