@@ -44,6 +44,13 @@ const run = async () => {
             const result = await serviceCollection.findOne(query)
             res.send(result)
         })
+        // add a service
+        app.post('/service', async (req, res) => {
+            const serviceDoc = req.body
+            const result = await serviceCollection.insertOne(serviceDoc)
+            res.send(result)
+
+        })
         // get review
         app.get('/review/:id', async (req, res) => {
             const id = req.params.id;
@@ -88,7 +95,6 @@ const run = async () => {
             };
             const result = await reviewCollection.updateOne(query, updateDoc, options);
             res.send(result)
-            console.log(result);
         })
         // delete a review
         app.delete('/my-reviews/:id', async (req, res) => {
