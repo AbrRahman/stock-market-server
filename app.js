@@ -60,6 +60,22 @@ const run = async () => {
                 res.send({ result, reviewDoc })
             }
         })
+        // get email by review
+        app.post('/my-reviews', async (req, res) => {
+            const { email } = req.body
+            const query = { reviewerEmail: email }
+            const cursor = reviewCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result)
+        })
+        // delete a review
+        app.delete('/my-reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const result = await reviewCollection.deleteOne(query)
+            res.send(result)
+            console.log(result)
+        })
     } catch (err) {
         console.log(err)
     }
