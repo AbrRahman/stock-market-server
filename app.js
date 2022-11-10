@@ -44,6 +44,14 @@ const run = async () => {
             const result = await serviceCollection.findOne(query)
             res.send(result)
         })
+        // get review
+        app.get('/review/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { serviceId: id }
+            const cursor = reviewCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result)
+        })
         //add user review
         app.post('/review', async (req, res) => {
             const reviewDoc = req.body
