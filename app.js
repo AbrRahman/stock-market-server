@@ -68,13 +68,34 @@ const run = async () => {
             const result = await cursor.toArray();
             res.send(result)
         })
+        // get single review
+        app.get('/my-reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const result = await reviewCollection.findOne(query)
+            res.send(result)
+        })
+        // update review
+        app.put('/my-reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            const { updateValue } = req.body;
+            const query = { _id: ObjectId(id) }
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    reviewMsg: updateValue
+                },
+            };
+            const result = await reviewCollection.updateOne(query, updateDoc, options);
+            res.send(result)
+            console.log(result);
+        })
         // delete a review
         app.delete('/my-reviews/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) }
             const result = await reviewCollection.deleteOne(query)
             res.send(result)
-            console.log(result)
         })
     } catch (err) {
         console.log(err)
