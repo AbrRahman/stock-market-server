@@ -3,6 +3,7 @@ const app = express();
 const dotenv = require('dotenv');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const jwt = require('jsonwebtoken');
 // config dotenv file 
 dotenv.config();
 
@@ -18,7 +19,17 @@ const port = process.env.PORT || 5000;
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.fotdr.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-
+//  verify jwt token
+// const verifyToken = async (req, res, next) => {
+//     const authHeader = req.headers.authorization;
+//     console.log(authHeader)
+//     if (!authHeader) {
+//         return res.status(401).json({ message: "unauthorized access" })
+//     }
+//     const token = authHeader.split(' ')[1];
+//     const decoded = await jwt.verify(token, process.env.JWT_SECRET);
+//     console.log(decoded);
+// }
 
 const run = async () => {
     try {
@@ -66,6 +77,14 @@ const run = async () => {
             if (result) {
                 res.send({ result, reviewDoc })
             }
+        })
+
+        // jwt authentication implemantation
+        app.post('/jwt', async (req, res) => {
+            const payload = req.body;
+            const token = await jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+            res.send({ token })
+            // console.log(token)
         })
         // get email by review
         app.post('/my-reviews', async (req, res) => {
